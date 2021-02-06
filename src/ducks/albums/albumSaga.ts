@@ -1,5 +1,12 @@
 import { Action } from "@reduxjs/toolkit";
-import { call, put, takeLatest } from "redux-saga/effects";
+import {
+  call,
+  put,
+  select,
+  take,
+  takeLatest,
+  throttle,
+} from "redux-saga/effects";
 import { albumsActions } from "./albumSlice";
 import { Album } from "../../Models";
 import * as API from "../../api";
@@ -9,6 +16,8 @@ const {
   getAlbumStart,
   getAlbumSuccess,
   getAlbumFailure,
+  getSearchedAlbums,
+  getSortedAlbums,
 } = albumsActions;
 
 function parseAlbums(json: any) {
@@ -37,6 +46,25 @@ function parseAlbums(json: any) {
   });
 }
 
+function sortAlbums(albums: Album[], type: string) {
+  return albums.sort((a: Album, b: Album) => {
+    if (type === "releaseDate") {
+      return b["releaseDate"].getTime() - a["releaseDate"].getTime();
+    }
+    if (type === "name") {
+      const nameA = a.name.toUpperCase();
+      const nameB = b.name.toUpperCase();
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+      return 0;
+    }
+  });
+}
+
 function* fetchAlbums(action: Action) {
   try {
     if (getAlbums.match(action)) {
@@ -50,6 +78,30 @@ function* fetchAlbums(action: Action) {
   }
 }
 
+function* searchSortAlbumsFlow(action: Action) {
+  try {
+    const state = yield select();
+    const json: any = yield call(API.getAlbums);
+    let albums: Album[] = yield call(parseAlbums, json);
+
+    if (state.albums.searched !== "") {
+      const searchText: string = state.albums.searched.toLowerCase();
+      albums = albums.filter((album: Album) =>
+        album.title.toLowerCase().includes(searchText)
+      );
+    }
+
+    if (state.albums.sorted !== "") {
+      albums = yield call(sortAlbums, albums, state.albums.sorted);
+    }
+    yield put(getAlbumSuccess(albums));
+  } catch (e) {
+    yield put(getAlbumFailure(e.message));
+  }
+}
+
 export function* albumSaga() {
   yield takeLatest(getAlbums, fetchAlbums);
+  yield takeLatest(getSearchedAlbums, searchSortAlbumsFlow);
+  yield takeLatest(getSortedAlbums, searchSortAlbumsFlow);
 }

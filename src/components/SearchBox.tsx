@@ -1,7 +1,16 @@
-import React from "react";
+import React, { forwardRef } from "react";
+interface Props {
+  onChange: () => void;
+}
 
-const SearchBox = () => {
-  return <input />;
-};
+const SearchBox = forwardRef(
+  ({ onChange }: Props, ref: React.Ref<HTMLInputElement>) => {
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "Enter") onChange();
+    };
+
+    return <input ref={ref} type="text" onKeyDown={handleKeyDown} />;
+  }
+);
 
 export default SearchBox;

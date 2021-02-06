@@ -5,14 +5,16 @@ interface AlbumsState {
   albums: Album[] | null;
   loading: boolean;
   error: string | null;
-  sort: string;
+  sorted: string | null;
+  searched: string | null;
 }
 
 const albumInitialState: AlbumsState = {
   albums: null,
   loading: false,
   error: null,
-  sort: "",
+  sorted: null,
+  searched: null,
 };
 
 export const albums = createSlice({
@@ -31,24 +33,11 @@ export const albums = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    selectSort(state: AlbumsState, action: PayloadAction<string>): void {
-      state.sort = action.payload;
-      state.albums = [...state.albums].sort((a: Album, b: Album) => {
-        if (action.payload === "releaseDate") {
-          return b["releaseDate"].getTime() - a["releaseDate"].getTime();
-        }
-        if (action.payload === "name") {
-          const nameA = a.name.toUpperCase();
-          const nameB = b.name.toUpperCase();
-          if (nameA < nameB) {
-            return -1;
-          }
-          if (nameA > nameB) {
-            return 1;
-          }
-          return 0;
-        }
-      });
+    getSearchedAlbums(state: AlbumsState, action: PayloadAction<string>): void {
+      state.searched = action.payload;
+    },
+    getSortedAlbums(state: AlbumsState, action: PayloadAction<string>): void {
+      state.sorted = action.payload;
     },
   },
 });

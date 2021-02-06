@@ -11,30 +11,46 @@ import Header from "components/Header";
 import SearchBox from "components/SearchBox";
 import SelectBox from "components/SelectBox";
 import AlbumDetail from "./AlbumDetail";
+import { Album } from "../Models";
 
 const AlbumList = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [selected, setSelected] = useState<number>(0);
+
   const selectRef = React.useRef<HTMLSelectElement>(null);
+  const searchRef = React.useRef<HTMLInputElement>(null);
   const dispatch: Dispatch<Action> = useDispatch();
 
-  const { albums, error, loading } = useSelector((state: RootState) => {
-    return {
-      albums: state.albums.albums,
-      error: state.albums.error,
-      loading: state.albums.loading,
-    };
-  }, shallowEqual);
+  const { albums, loading, sorted, searched } = useSelector(
+    (state: RootState) => {
+      return {
+        albums: state.albums.albums,
+        loading: state.albums.loading,
+        sorted: state.albums.sorted,
+        searched: state.albums.searched,
+      };
+    },
+    shallowEqual
+  );
 
   useEffect((): void => {
     dispatch(albumsActions.getAlbums());
-    // eslint-disable-next-line
   }, []);
+
+  // useEffect((): void => {
+  //   dispatch(albumsActions.searchAlbums(searchText));
+  // }, [searchText]);
+  // useEffect((): void => setAlbumList(albums), [albums]);
 
   return (
     <>
       <Header>
-        <SearchBox />
+        <SearchBox
+          ref={searchRef}
+          onChange={() => {
+            dispatch(albumsActions.getSearchedAlbums(searchRef.current.value));
+          }}
+        />
         <SelectBox
           ref={selectRef}
           label="sort"
@@ -43,13 +59,13 @@ const AlbumList = () => {
             { value: "releaseDate", label: "출시일순" },
             { value: "name", label: "이름순" },
           ]}
-          onChange={() => {
+          onChange={() =>
             dispatch(
-              albumsActions.selectSort(
+              albumsActions.getSortedAlbums(
                 selectRef.current["selectedOptions"][0].value
               )
-            );
-          }}
+            )
+          }
         />
       </Header>
       {loading
