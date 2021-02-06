@@ -1,7 +1,23 @@
 @charset "UTF-8";
 
 @import "components/card.scss";
+@import "components/modal.scss";
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 body {
-  background-color: grey;
+  background-color: #556;
+}
+ul {
+  margin: 10px 0 10px 30px;
+}
+li,
+p {
+  margin: 0 0 10px 0;
+}
+h1 {
+  margin: 0 0 20px 0;
 }

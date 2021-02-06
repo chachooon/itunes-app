@@ -1,12 +1,5 @@
 import { Action } from "@reduxjs/toolkit";
-import {
-  call,
-  put,
-  select,
-  take,
-  takeLatest,
-  throttle,
-} from "redux-saga/effects";
+import { call, put, select, takeLatest } from "redux-saga/effects";
 import { albumsActions } from "./albumSlice";
 import { Album } from "../../Models";
 import * as API from "../../api";

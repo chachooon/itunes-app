@@ -1,7 +1,31 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
+interface Props {
+  open: boolean;
+  onClose: () => void;
+}
+const Modal: React.FC<Props> = ({ open, onClose, children }) => {
+  const modalRef = useRef<HTMLDivElement>(null);
 
-const Modal: React.FC = ({ children }) => {
-  return <div className="card-container">{children}</div>;
+  useEffect((): void => {
+    if (open) {
+      modalRef.current.classList.remove("closed");
+    } else {
+      modalRef.current.classList.add("closed");
+    }
+  }, [open]);
+
+  return (
+    <div ref={modalRef} className="closed">
+      <div className="modal-overlay" id="modal-overlay"></div>
+
+      <div className="modal" id="modal">
+        <button className="close-button" id="close-button" onClick={onClose}>
+          X
+        </button>
+        <div className="modal-guts">{children}</div>
+      </div>
+    </div>
+  );
 };
 
 export default Modal;

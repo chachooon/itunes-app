@@ -9,7 +9,7 @@ const SearchBox = forwardRef(
       if (event.key === "Enter") onChange();
     };
 
-    return <input ref={ref} type="text" onKeyDown={handleKeyDown} />;
+    return <input ref={ref} type="search" onKeyDown={handleKeyDown} />;
   }
 );
 

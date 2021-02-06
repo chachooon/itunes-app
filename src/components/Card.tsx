@@ -1,6 +1,6 @@
 import React from "react";
 interface Props {
-  onClick: () => void;
+  onClick?: () => void;
 }
 const Card: React.FC<Props> = ({ onClick, children }) => {
   return (

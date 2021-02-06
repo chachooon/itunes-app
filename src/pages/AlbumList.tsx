@@ -10,7 +10,7 @@ import CardContent from "../components/CardContent";
 import Header from "components/Header";
 import SearchBox from "components/SearchBox";
 import SelectBox from "components/SelectBox";
-import AlbumDetail from "./AlbumDetail";
+import Modal from "components/Modal";
 import { Album } from "../Models";
 
 const AlbumList = () => {
@@ -93,11 +93,14 @@ const AlbumList = () => {
             </Card>
           ))}
       {albums && (
-        <AlbumDetail
-          onClose={() => setOpen(false)}
-          selectedAlbum={albums[selected]}
-          open={open}
-        />
+        <Modal onClose={() => setOpen(false)} open={open}>
+          <Card key={albums[selected].id}>
+            <CardImage src={albums[selected].image[2]} />
+            <CardContent>
+              <p>{albums[selected].title}</p>
+            </CardContent>
+          </Card>
+        </Modal>
       )}
     </>
   );
