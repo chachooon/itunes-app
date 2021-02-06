@@ -1,2 +1,7 @@
-@import './vars.scss';
-@import './body.scss';
+@charset "UTF-8";
+
+@import "components/card.scss";
+
+body {
+  background-color: grey;
+}

@@ -1,5 +1,5 @@
 import { createSlice, createAction, PayloadAction } from "@reduxjs/toolkit";
-import { Album } from "../../../Models";
+import { Album } from "../../Models";
 
 interface AlbumsState {
   albums: Album[] | null;

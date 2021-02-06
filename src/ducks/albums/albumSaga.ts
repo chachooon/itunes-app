@@ -1,7 +1,7 @@
 import { Action } from "@reduxjs/toolkit";
 import { call, put, takeLatest } from "redux-saga/effects";
 import { albumsActions } from "./albumSlice";
-import { Album } from "../../../Models";
+import { Album } from "../../Models";
 import * as API from "../../api";
 
 const {
@@ -17,9 +17,9 @@ function parseAlbums(json: any) {
       const albums: Album[] = json.feed.entry.map((item: any) => {
         return {
           id: Number(item.id.attributes["im:id"]),
-          name: item["im:name"],
-          title: item.title,
-          artist: item["im:artist"],
+          name: item["im:name"].label,
+          title: item.title.label,
+          artist: item["im:artist"].label,
           category: item.category.attributes.label,
           rights: item.rights.label,
           link: item.link.attributes.href,
