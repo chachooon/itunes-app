@@ -82,23 +82,26 @@ const AlbumList = () => {
         />
       </Header>
       <ul className="card_container">
-        {loading
-          ? "Loading..."
-          : albums &&
-            albums.map((album, idx) => (
-              <li className="card" key={idx} id={String(idx)}>
-                <CardImage src={album.image[0]} alt={album.title} />
-                <div className="card_content">
-                  <p>
-                    <span className="card_title">{album.name}</span>
-                    <span>{album.artist}</span>
-                  </p>
-                </div>
-              </li>
-            ))}
+        {loading ? (
+          <p className="message">Loading...</p>
+        ) : albums.length > 0 ? (
+          albums.map((album, idx) => (
+            <li className="card" key={idx} id={String(idx)}>
+              <CardImage src={album.image[0]} alt={album.title} />
+              <div className="card_content">
+                <p>
+                  <span className="card_title">{album.name}</span>
+                  <span>{album.artist}</span>
+                </p>
+              </div>
+            </li>
+          ))
+        ) : (
+          <p className="message">검색 결과가 없습니다.</p>
+        )}
       </ul>
 
-      {albums && (
+      {albums.length > 0 && (
         <Modal onClose={() => setOpen(false)} open={open}>
           <div className="card">
             <CardImage

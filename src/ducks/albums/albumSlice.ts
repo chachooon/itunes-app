@@ -2,7 +2,7 @@ import { createSlice, createAction, PayloadAction } from "@reduxjs/toolkit";
 import { Album } from "../../Models";
 
 interface AlbumsState {
-  albums: Album[] | null;
+  albums: Album[];
   loading: boolean;
   error: string | null;
   searchText: string | null;
@@ -10,7 +10,7 @@ interface AlbumsState {
 }
 
 const albumInitialState: AlbumsState = {
-  albums: null,
+  albums: [],
   loading: false,
   error: null,
   searchText: null,
