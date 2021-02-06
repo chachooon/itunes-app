@@ -1,15 +1,15 @@
 import React from "react";
+import { HTMLAttributes } from "react";
 
 interface Props {
   src: string;
+  alt: string;
+  srcSet?: string;
+  sizes?: string;
 }
 
-const CardImage = ({ src }: Props) => {
-  return (
-    <div className="card-image">
-      <img src={src} />
-    </div>
-  );
+const CardImage = (props: Props) => {
+  return <img className="card_image" {...props} />;
 };
 
 export default CardImage;

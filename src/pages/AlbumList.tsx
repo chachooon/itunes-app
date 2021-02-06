@@ -1,12 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, MouseEvent } from "react";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { Dispatch } from "redux";
 import { Action } from "@reduxjs/toolkit";
 import { RootState } from "../ducks/rootReducer";
 import { albumsActions } from "../ducks/albums";
-import Card from "../components/Card";
 import CardImage from "components/CardImage";
-import CardContent from "../components/CardContent";
 import Header from "components/Header";
 import SearchBox from "components/SearchBox";
 import SelectBox from "components/SelectBox";
@@ -31,6 +29,14 @@ const AlbumList = () => {
 
   useEffect((): void => {
     dispatch(albumsActions.getAlbums());
+    document.querySelector(".card_container").addEventListener("click", (e) => {
+      e["path"].forEach((path: object) => {
+        if (path["className"] === "card" && path["id"]) {
+          setSelected(+path["id"]);
+          setOpen(true);
+        }
+      });
+    });
   }, []);
 
   return (
@@ -75,31 +81,57 @@ const AlbumList = () => {
           }
         />
       </Header>
-      {loading
-        ? "Loading..."
-        : albums &&
-          albums.map((album, idx) => (
-            <Card
-              key={idx}
-              onClick={() => {
-                setSelected(idx);
-                setOpen(true);
-              }}
-            >
-              <CardImage src={album.image[0]} />
-              <CardContent>
-                <p>{album.title}</p>
-              </CardContent>
-            </Card>
-          ))}
+      <ul className="card_container">
+        {loading
+          ? "Loading..."
+          : albums &&
+            albums.map((album, idx) => (
+              <li className="card" key={idx} id={String(idx)}>
+                <CardImage src={album.image[0]} alt={album.title} />
+                <div className="card_content">
+                  <p>
+                    <span className="card_title">{album.name}</span>
+                    <span>{album.artist}</span>
+                  </p>
+                </div>
+              </li>
+            ))}
+      </ul>
+
       {albums && (
         <Modal onClose={() => setOpen(false)} open={open}>
-          <Card key={albums[selected].id}>
-            <CardImage src={albums[selected].image[2]} />
-            <CardContent>
-              <p>{albums[selected].title}</p>
-            </CardContent>
-          </Card>
+          <div className="card">
+            <CardImage
+              src={albums[selected].image[2]}
+              alt={albums[selected].title}
+            />
+            <div className="card_content">
+              <h1 className="card_title">{albums[selected].name}</h1>
+              <ul>
+                <li>
+                  <span>Artist:</span>
+                  {albums[selected].artist}
+                </li>
+                <li>
+                  <span>Category:</span>
+                  {albums[selected].category}
+                </li>
+                <li>
+                  <span>price:</span>
+                  {albums[selected].price}
+                </li>
+
+                <li>
+                  <span>Release Date:</span>
+                  {albums[selected].releaseDate.toLocaleDateString()}
+                </li>
+                <li>
+                  <span>Rights:</span>
+                  {albums[selected].rights}
+                </li>
+              </ul>
+            </div>
+          </div>
         </Modal>
       )}
     </>

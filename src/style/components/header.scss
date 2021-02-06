@@ -1,0 +1,84 @@
+header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: fixed;
+  width: 100%;
+  height: 50px;
+  top: 0;
+  padding: 0 70px;
+  z-index: 1;
+  background: #2d2d2d;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.search-box__wrapper {
+  width: 100%;
+  margin-right: 10px;
+}
+input[type="search"] {
+  width: 100%;
+  height: auto;
+  line-height: normal;
+  padding: 0.4em;
+  font-family: inherit;
+  border: 1px solid #999;
+  border-radius: 0;
+  box-sizing: border-box;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+input[type="search"]:focus {
+  border: 2px solid #fa2d48;
+  border-radius: 2px;
+}
+
+.selectbox {
+  position: relative;
+  background-color: white;
+  border: 1px solid #999; /* 테두리 설정 */
+  z-index: 1;
+  margin-left: 10px;
+}
+
+/* 가상 선택자를 활용 화살표 대체 */
+.selectbox:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 0;
+  height: 0;
+  margin-top: -1px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #313131;
+}
+
+.selectbox select {
+  width: 100%;
+  min-width: 80px;
+  height: auto; /* 높이 초기화 */
+  line-height: normal; /* line-height 초기화 */
+  font-family: inherit; /* 폰트 상속 */
+  padding: 0.4em;
+  padding-right: 30px;
+  border: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+@media (max-width: 600px) {
+  header {
+    flex-wrap: wrap;
+    height: 80px;
+    padding: 5px 30px;
+  }
+  .search-box__wrapper {
+    margin-right: 0;
+  }
+}

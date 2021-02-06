@@ -16,13 +16,13 @@ const Modal: React.FC<Props> = ({ open, onClose, children }) => {
 
   return (
     <div ref={modalRef} className="closed">
-      <div className="modal-overlay" id="modal-overlay"></div>
+      <div className="modal_overlay" id="modal-overlay"></div>
 
       <div className="modal" id="modal">
-        <button className="close-button" id="close-button" onClick={onClose}>
+        <button className="close_button" id="close-button" onClick={onClose}>
           X
         </button>
-        <div className="modal-guts">{children}</div>
+        <div className="modal_content">{children}</div>
       </div>
     </div>
   );

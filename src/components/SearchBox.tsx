@@ -9,7 +9,17 @@ const SearchBox = forwardRef(
       if (event.key === "Enter") onChange();
     };
 
-    return <input ref={ref} type="search" onKeyDown={handleKeyDown} />;
+    return (
+      <div className="search-box__wrapper">
+        <input
+          ref={ref}
+          type="search"
+          placeholder="Search"
+          className="search-box__input"
+          onKeyDown={handleKeyDown}
+        />
+      </div>
+    );
   }
 );
 

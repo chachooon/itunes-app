@@ -13,16 +13,15 @@ interface Option {
 const SelectBox = forwardRef(
   ({ label, options, onChange }: Props, ref: React.Ref<HTMLSelectElement>) => {
     return (
-      <label>
-        {label}
-        <select ref={ref} name={label} onChange={onChange}>
+      <div className="selectbox">
+        <select id="select" ref={ref} name={label} onChange={onChange}>
           {options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>
           ))}
         </select>
-      </label>
+      </div>
     );
   }
 );
