@@ -47,7 +47,9 @@ function sortAlbums(albums: Album[], sortType: string[]) {
   } else {
     return albums.sort((a: Album, b: Album) => {
       if (sortType[0] === "releaseDate") {
-        return b["releaseDate"].getTime() - a["releaseDate"].getTime();
+        return sortType[1] === "asc"
+          ? a["releaseDate"].getTime() - b["releaseDate"].getTime()
+          : b["releaseDate"].getTime() - a["releaseDate"].getTime();
       }
       if (sortType[0] === "name") {
         const nameA = a.name.toUpperCase();
