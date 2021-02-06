@@ -17,30 +17,21 @@ const AlbumList = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [selected, setSelected] = useState<number>(0);
 
-  const selectRef = React.useRef<HTMLSelectElement>(null);
+  const selectSortRef = React.useRef<HTMLSelectElement>(null);
+  const selectTypeRef = React.useRef<HTMLSelectElement>(null);
   const searchRef = React.useRef<HTMLInputElement>(null);
   const dispatch: Dispatch<Action> = useDispatch();
 
-  const { albums, loading, sorted, searched } = useSelector(
-    (state: RootState) => {
-      return {
-        albums: state.albums.albums,
-        loading: state.albums.loading,
-        sorted: state.albums.sorted,
-        searched: state.albums.searched,
-      };
-    },
-    shallowEqual
-  );
+  const { albums, loading } = useSelector((state: RootState) => {
+    return {
+      albums: state.albums.albums,
+      loading: state.albums.loading,
+    };
+  }, shallowEqual);
 
   useEffect((): void => {
     dispatch(albumsActions.getAlbums());
   }, []);
-
-  // useEffect((): void => {
-  //   dispatch(albumsActions.searchAlbums(searchText));
-  // }, [searchText]);
-  // useEffect((): void => setAlbumList(albums), [albums]);
 
   return (
     <>
@@ -52,18 +43,34 @@ const AlbumList = () => {
           }}
         />
         <SelectBox
-          ref={selectRef}
+          ref={selectSortRef}
           label="sort"
           options={[
-            { value: "", label: "-" },
+            { value: "", label: "인기순" },
             { value: "releaseDate", label: "출시일순" },
             { value: "name", label: "이름순" },
           ]}
           onChange={() =>
             dispatch(
-              albumsActions.getSortedAlbums(
-                selectRef.current["selectedOptions"][0].value
-              )
+              albumsActions.getSortedAlbums([
+                selectSortRef.current["selectedOptions"][0].value,
+                selectTypeRef.current["selectedOptions"][0].value,
+              ])
+            )
+          }
+        />
+        <SelectBox
+          ref={selectTypeRef}
+          options={[
+            { value: "desc", label: "내림차순" },
+            { value: "asc", label: "오름차순" },
+          ]}
+          onChange={() =>
+            dispatch(
+              albumsActions.getSortedAlbums([
+                selectSortRef.current["selectedOptions"][0].value,
+                selectTypeRef.current["selectedOptions"][0].value,
+              ])
             )
           }
         />

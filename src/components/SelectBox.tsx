@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 interface Props {
-  label: string;
+  label?: string;
   options: Option[];
   onChange: () => void;
 }

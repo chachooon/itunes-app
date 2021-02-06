@@ -18,6 +18,8 @@ const {
   getAlbumFailure,
   getSearchedAlbums,
   getSortedAlbums,
+  setSearchText,
+  setSortType,
 } = albumsActions;
 
 function parseAlbums(json: any) {
@@ -46,23 +48,28 @@ function parseAlbums(json: any) {
   });
 }
 
-function sortAlbums(albums: Album[], type: string) {
-  return albums.sort((a: Album, b: Album) => {
-    if (type === "releaseDate") {
-      return b["releaseDate"].getTime() - a["releaseDate"].getTime();
-    }
-    if (type === "name") {
-      const nameA = a.name.toUpperCase();
-      const nameB = b.name.toUpperCase();
-      if (nameA < nameB) {
-        return -1;
+function sortAlbums(albums: Album[], sortType: string[]) {
+  if (sortType[0] === "" && sortType[1] === "asc") {
+    return albums.reverse();
+  } else {
+    return albums.sort((a: Album, b: Album) => {
+      if (sortType[0] === "releaseDate") {
+        return b["releaseDate"].getTime() - a["releaseDate"].getTime();
       }
-      if (nameA > nameB) {
-        return 1;
+      if (sortType[0] === "name") {
+        const nameA = a.name.toUpperCase();
+        const nameB = b.name.toUpperCase();
+
+        if (nameA < nameB) {
+          return sortType[1] === "asc" ? -1 : 1;
+        }
+        if (nameA > nameB) {
+          return sortType[1] === "asc" ? 1 : -1;
+        }
+        return 0;
       }
-      return 0;
-    }
-  });
+    });
+  }
 }
 
 function* fetchAlbums(action: Action) {
@@ -80,21 +87,34 @@ function* fetchAlbums(action: Action) {
 
 function* searchSortAlbumsFlow(action: Action) {
   try {
+    yield put(getAlbumStart());
     const state = yield select();
     const json: any = yield call(API.getAlbums);
     let albums: Album[] = yield call(parseAlbums, json);
+    let searchText: string = state.albums.searchText;
+    let sortType: string[] = state.albums.sortType;
 
-    if (state.albums.searched !== "") {
-      const searchText: string = state.albums.searched.toLowerCase();
+    if (getSearchedAlbums.match(action)) {
+      yield put(setSearchText(action.payload));
+      searchText = action.payload.toLowerCase();
+    }
+    if (getSortedAlbums.match(action)) {
+      yield put(setSortType(action.payload));
+      sortType = action.payload;
+    }
+
+    if (searchText && searchText !== "") {
       albums = albums.filter((album: Album) =>
         album.title.toLowerCase().includes(searchText)
       );
     }
 
-    if (state.albums.sorted !== "") {
-      albums = yield call(sortAlbums, albums, state.albums.sorted);
+    if (sortType[0] === "" && sortType[1] === "desc") {
+      yield put(getAlbumSuccess(albums));
+    } else {
+      const sorted = yield call(sortAlbums, albums, sortType);
+      yield put(getAlbumSuccess(sorted));
     }
-    yield put(getAlbumSuccess(albums));
   } catch (e) {
     yield put(getAlbumFailure(e.message));
   }
