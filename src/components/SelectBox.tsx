@@ -1,13 +1,30 @@
-import React from "react";
+import React, { forwardRef } from "react";
+interface Props {
+  label: string;
+  options: Option[];
+  onChange: () => void;
+}
 
-const SelectBox = () => {
-  return (
-    <select>
-      <option value="popular">인기 순</option>
-      <option value="releaseDate">릴리즈 일자 순</option>
-      <option value="name">이름 순</option>
-    </select>
-  );
-};
+interface Option {
+  value: string | number;
+  label: string;
+}
+
+const SelectBox = forwardRef(
+  ({ label, options, onChange }: Props, ref: React.Ref<HTMLSelectElement>) => {
+    return (
+      <label>
+        {label}
+        <select ref={ref} name={label} onChange={onChange}>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </label>
+    );
+  }
+);
 
 export default SelectBox;

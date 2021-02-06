@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { Dispatch } from "redux";
 import { Action } from "@reduxjs/toolkit";
@@ -15,6 +15,7 @@ import AlbumDetail from "./AlbumDetail";
 const AlbumList = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [selected, setSelected] = useState<number>(0);
+  const selectRef = React.useRef<HTMLSelectElement>(null);
   const dispatch: Dispatch<Action> = useDispatch();
 
   const { albums, error, loading } = useSelector((state: RootState) => {
@@ -34,24 +35,47 @@ const AlbumList = () => {
     <>
       <Header>
         <SearchBox />
-        <SelectBox />
+        <SelectBox
+          ref={selectRef}
+          label="sort"
+          options={[
+            { value: "", label: "-" },
+            { value: "releaseDate", label: "출시일순" },
+            { value: "name", label: "이름순" },
+          ]}
+          onChange={() => {
+            dispatch(
+              albumsActions.selectSort(
+                selectRef.current["selectedOptions"][0].value
+              )
+            );
+          }}
+        />
       </Header>
       {loading
         ? "Loading..."
         : albums &&
           albums.map((album, idx) => (
-            <Card key={idx} onClick={() => setSelected(idx)}>
+            <Card
+              key={idx}
+              onClick={() => {
+                setSelected(idx);
+                setOpen(true);
+              }}
+            >
               <CardImage src={album.image[0]} />
               <CardContent>
                 <p>{album.title}</p>
               </CardContent>
             </Card>
           ))}
-      <AlbumDetail
-        onClose={() => {}}
-        selectedAlbum={albums[selected]}
-        open={open}
-      />
+      {albums && (
+        <AlbumDetail
+          onClose={() => setOpen(false)}
+          selectedAlbum={albums[selected]}
+          open={open}
+        />
+      )}
     </>
   );
 };
